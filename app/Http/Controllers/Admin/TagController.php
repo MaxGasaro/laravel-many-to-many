@@ -63,7 +63,6 @@ class TagController extends Controller
         return redirect()->route('admin.tags.index');
 
     }
-    }
 
     /**
      * Display the specified resource.
@@ -82,9 +81,9 @@ class TagController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Tag $tag)
     {
-        //
+        return view('admin.tags.edit', compact('tag'));
     }
 
     /**
@@ -94,9 +93,32 @@ class TagController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Tag $tag)
     {
-        //
+        $request->validate([
+            'name'=>'required|min:4'
+        ]);
+
+        $data = $request->all();
+
+        $slug = Str::slug($data['name']);
+
+        $counter = 1;
+        while(Tag::where('slug', $slug)->first()) {
+
+            $slug = Str::slug($data['name']) . "-" . $counter;
+            $counter++;
+
+        }
+
+        $data['slug'] = $slug;
+
+        $tag = new Tag();
+        $tag->fill($data);
+        $tag->save();
+
+        return redirect()->route('admin.tags.index');
+
     }
 
     /**
@@ -105,8 +127,9 @@ class TagController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Tag $tag)
     {
-        //
+        $tag->delete();
+        return redirect()->route('admin.tags.index');   
     }
 }

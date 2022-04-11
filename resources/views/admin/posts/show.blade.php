@@ -9,9 +9,14 @@
                 <div><strong>Titolo: </strong>{{$post->title}}</div>
                 <div><strong>Contenuto: </strong>{{!! $post->content !!}}</div>
                 <div><strong>Slug: </strong>{{$post->slug}}</div>
-                <div><strong>Categoria: </strong>{{$post->category->name}}</div>
-                {{-- qui inserisco i dati riguardanti i post --}}
-                <a class="btn btn-primary" href="{{route('admin.posts.index')}}">Torna alla lista</a>
+                <div><strong>Categoria: </strong>{{isset($post->category)?$post->category->name:'N.D.'}}</div>
+                <div>
+                    @foreach ($post->tags as $tag)
+                        <span class="badge badge-primary">{{$tag->name}}</span>
+                    @endforeach
+                </div>
+
+                <a href="{{ url()->previous() }}" class="btn btn-primary">Torna indietro</a>
             </div>
         </div>
     </div>
